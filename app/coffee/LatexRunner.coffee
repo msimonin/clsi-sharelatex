@@ -3,6 +3,7 @@ Settings = require "settings-sharelatex"
 logger = require "logger-sharelatex"
 Metrics = require "./Metrics"
 CommandRunner = require(Settings.clsi?.commandRunner or "./CommandRunner")
+Fs = require "fs" ;
 
 module.exports = LatexRunner =
 	runLatex: (project_id, options, callback = (error) ->) ->
@@ -15,19 +16,24 @@ module.exports = LatexRunner =
 		# We want to run latexmk on the tex file which we will automatically
 		# generate from the Rtex/Rmd/md file.
 		mainFile = mainFile.replace(/\.(Rtex|md|Rmd)$/, ".tex")
+		# prevent custom latexmkrc files to be call
+		Fs.exists "#{directory}/latexmkrc", (exists) ->
+			if exists
+				logger.log "Blocking latexmkrc file", "#{directory}/latexmkrc", "#{directory}/latexmkrc.block"
+				Fs.renameSync("#{directory}/latexmkrc", "#{directory}/latexmkrc.block")
 
-		if compiler == "pdflatex"
-			command = LatexRunner._pdflatexCommand mainFile
-		else if compiler == "latex"
-			command = LatexRunner._latexCommand mainFile
-		else if compiler == "xelatex"
-			command = LatexRunner._xelatexCommand mainFile
-		else if compiler == "lualatex"
-			command = LatexRunner._lualatexCommand mainFile
-		else
-			return callback new Error("unknown compiler: #{compiler}")
+			if compiler == "pdflatex"
+				command = LatexRunner._pdflatexCommand mainFile
+			else if compiler == "latex"
+				command = LatexRunner._latexCommand mainFile
+			else if compiler == "xelatex"
+				command = LatexRunner._xelatexCommand mainFile
+			else if compiler == "lualatex"
+				command = LatexRunner._lualatexCommand mainFile
+			else
+				return callback new Error("unknown compiler: #{compiler}")
 
-		CommandRunner.run project_id, command, directory, timeout, callback
+			CommandRunner.run project_id, command, directory, timeout, callback
 
 	_latexmkBaseCommand: [ "latexmk", "-cd", "-f", "-jobname=output", "-auxdir=$COMPILE_DIR", "-outdir=$COMPILE_DIR"]
 
