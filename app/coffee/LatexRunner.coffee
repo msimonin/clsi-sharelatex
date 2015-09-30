@@ -50,7 +50,7 @@ module.exports = LatexRunner =
 			callback error, output, stats, timings
 
 	_latexmkBaseCommand: (Settings?.clsi?.latexmkCommandPrefix || []).concat(
-			["latexmk", "-cd", "-f", "-jobname=output", "-auxdir=$COMPILE_DIR", "-outdir=$COMPILE_DIR"]
+			["latexmk", "-cd", "-f", "-jobname=output", "-auxdir=$COMPILE_DIR", "-outdir=$COMPILE_DIR", "-shell-escape"]
 		)
 
 	_pdflatexCommand: (mainFile) ->
