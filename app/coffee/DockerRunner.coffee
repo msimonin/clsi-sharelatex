@@ -24,8 +24,8 @@ module.exports = DockerRunner =
 			"run",
 			"-v","#{directory}:/compile",
     			"#{image}",
-		  	"sudo", "-g", "\##{clsiGid}", "-u", "\##{clsiUid}",
-			"HOME=/compile"]
+		  	"sudo", "-g", "\##{clsiGid}", "-u", "\##{clsiUid}"
+			]
 
 		command[0] = "latexmk"
 		# we append the command to run to the docker one
