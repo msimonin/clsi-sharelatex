@@ -29,7 +29,7 @@ module.exports = LatexRunner =
 
 		CommandRunner.run project_id, command, directory, timeout, callback
 
-	_latexmkBaseCommand: [ "latexmk", "-cd", "-f", "-jobname=output", "-auxdir=$COMPILE_DIR", "-outdir=$COMPILE_DIR"]
+	_latexmkBaseCommand: [ "latexmk", "-cd", "-f", "-jobname=output", "-auxdir=$COMPILE_DIR", "-outdir=$COMPILE_DIR", "-shell-escape"]
 
 	_pdflatexCommand: (mainFile) ->
 		LatexRunner._latexmkBaseCommand.concat [
