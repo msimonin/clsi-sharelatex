@@ -16,7 +16,7 @@ TIMEOUT_DEFAULT=60
 
 module.exports = DockerRunner =
 	run: (project_id, command, directory, timeout, callback = (error) ->) ->
-		command = (arg.replace('$COMPILE_DIR', '/compile') for arg in command)
+		command = (arg.replace('$COMPILE_DIR', directory) for arg in command)
 		clsiUid = Settings.clsi.uid
 		clsiGid = Settings.clsi.gid
 		image = Settings.clsi.image
@@ -34,7 +34,7 @@ module.exports = DockerRunner =
 			"run",
             "--rm",
 			"--label", "sharelatex.project_id=#{project_id}",
-			"-v","#{directory}:/compile",
+			"-v","#{directory}:#{directory}",
     			"#{image}",
 		  	"sudo", "-g", "\##{clsiGid}", "-u", "\##{clsiUid}"
 			]
